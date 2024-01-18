@@ -10,7 +10,5 @@ RUN apt-get update && \
 COPY tatertots.sh /starch-mine/tatertots.sh
 COPY miner.conf /starch-mine/miner.conf
 RUN chmod +x /starch-mine/tatertots.sh
-COPY entrypoint.sh /starch-mine/entrypoint.sh
-RUN chmod +x /starch-mine/entrypoint.sh
 ENV TERM xterm
-CMD ["./entrypoint.sh"]
+CMD ["./tatertots.sh"]

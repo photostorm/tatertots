@@ -6,6 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: starch-mine
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./miner.conf:/starch-mine/miner.conf
