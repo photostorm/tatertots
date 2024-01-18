@@ -39,7 +39,7 @@ docker compose down
 
 ## Standalone script execution
 
-If you want to just run the script in a Tmux session or with Systemd just go through these steps to execute it locally.
+If you want to run the script in a Tmux session or with Systemd just go through these steps to execute it locally.
 
 1. Clone this repo and cd into it.
 ```shell
