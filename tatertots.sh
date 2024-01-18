@@ -18,7 +18,7 @@ submit() {
     local response=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"hash\": \"$hash_result\", \"miner_id\": \"$miner_id_result\", \"color\": \"$color_result\"}" "$host/submit_block")
     local http_status="${response: -3}"
     if [ "$http_status" -eq 200 ]; then
-        echo -e "API Response Code: $http_status\nSubmitted Block Hash = $hash_result"
+        echo -e "API Response Code: $http_status\nSubmitted Block Hash: $hash_result"
     else
         echo "API Request failed with HTTP response code: $http_status"
     fi
@@ -37,7 +37,7 @@ mine() {
             submit "$miner_id"
             echo -e "$(tput setaf 2)Tatertots: mining for $miner_id_result with $color_result$(tput sgr0)\n"
         done
-        echo -e "Sleeping for 20 seconds.\n"
+        echo -e "Sleeping for 20 seconds."
     else
         echo "Starch chain hash has not changed. Sleeping for 20 seconds."
     fi
