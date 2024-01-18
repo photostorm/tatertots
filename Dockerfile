@@ -1,4 +1,4 @@
-# Use an official Debian runtime as a base image
+# Official Debian runtime as a base image
 FROM debian:latest
 
 WORKDIR /starch-mine
