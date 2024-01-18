@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  starch-mine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: starch-mine
+    restart: always
+    volumes:
+      - ./miner.conf:/starch-mine/miner.conf
