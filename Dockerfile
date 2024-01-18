@@ -4,7 +4,7 @@ FROM debian:latest
 WORKDIR /starch-mine
 
 RUN apt-get update && \
-    apt-get install -y curl jq procps && \
+    apt-get install -y curl jq && \
     rm -rf /var/lib/apt/lists/*
 
 COPY tatertots.sh /starch-mine/tatertots.sh
