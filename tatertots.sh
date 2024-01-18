@@ -42,4 +42,4 @@ mine() {
     fi
 }
 
-while true; do mine; sleep 49; done
+while true; do mine; sleep 20; done
