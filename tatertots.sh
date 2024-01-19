@@ -6,27 +6,10 @@ declare -g last_hash_result=""
 echo -e "\nPicture this: Potatoes mining starch in a starch mine. Delightful, isn't it?"
 
 gen_color() {
-    echo -n "#"
-    for i in {1..6}; do
-        rand=$((RANDOM % 16))
-        printf "%X" "$rand"
-    done
-}
-
-hex_to_ansi() {
-    hex=$1
-    decimal=$(from_hex "$hex")
-    ansi_color=$((decimal % 256))
-    echo "$ansi_color"
-}
-
-from_hex() {
-    hex=$1
-    hex=$(echo $1 | awk '{print substr($0,2)}')
-    r=$(printf '0x%0.2s' "$hex")
-    g=$(printf '0x%0.2s' ${hex#??})
-    b=$(printf '0x%0.2s' ${hex#????})
-    echo -e `printf "%03d" "$(((r<75?0:(r-35)/40)*6*6+(g<75?0:(g-35)/40)*6+(b<75?0:(b-35)/40)+16))"`
+    R=$(shuf -i 0-255 -n 1)
+    G=$(shuf -i 0-255 -n 1)
+    B=$(shuf -i 0-255 -n 1)
+    hex=$(printf "#%02x%02x%02x" $R $G $B)
 }
 
 gen_hash() {
@@ -39,7 +22,7 @@ submit() {
     local miner_id=$1 retries=3
     local submit_hash=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"hash\": \"$new_hash\", \"miner_id\": \"$miner_id\", \"color\": \"$color\"}" "$host/submit_block")
     local http_status="${submit_hash: -3}"
-    if [ "$http_status" -eq 200 ]; then
+    if [[ "$http_status" =~ ^2 ]]; then
         echo -e "API Response Code: $http_status\nSubmitted Block Hash: $new_hash"
     else
         echo "API Request failed with HTTP response code: $http_status"
@@ -47,18 +30,16 @@ submit() {
 }
 
 mine() {
-    local query_tip=$(curl -s "$host/blockchain_config")
-    local current_hash=$(echo "$query_tip" | jq -r '.last_block.hash')
+    local current_hash=$(curl -s "$host/blockchain_config" | jq -r '.last_block.hash')
     if [ "$current_hash" != "$last_hash_result" ]; then
         last_hash_result="$current_hash"
         echo -e "\nNew chain hash detected!"
         echo -e "Starch chain hash: $last_hash_result\n"
         for miner_id in "${miner_ids[@]}"; do
-            local color=$(gen_color)
-            ansi_color=$(hex_to_ansi "$color")
-            gen_hash "$last_hash_result" "$miner_id" "$color"
+            gen_color
+            gen_hash "$last_hash_result" "$miner_id" "$hex"
             submit "$miner_id"
-            echo -e "\e[38;5;${ansi_color}mTatertot: Mining for $miner_id with $color\e[0m\n"
+            echo -e "\e[38;2;${R};${G};${B}mTatertot: Mining for $miner_id with $hex\e[0m\n"
         done
         echo "Sleeping for 30 seconds."
     else
