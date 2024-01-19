@@ -6,9 +6,9 @@ declare -g last_hash_result=""
 echo -e "\nPicture this: Potatoes mining starch in a starch mine. Delightful, isn't it?"
 
 gen_color() {
-    R=$(shuf -i 0-255 -n 1)
-    G=$(shuf -i 0-255 -n 1)
-    B=$(shuf -i 0-255 -n 1)
+    R=$((RANDOM % 256))
+    G=$((RANDOM % 256))
+    B=$((RANDOM % 256))
     hex=$(printf "#%02x%02x%02x" $R $G $B)
 }
 
@@ -39,7 +39,8 @@ mine() {
             gen_color
             gen_hash "$last_hash_result" "$miner_id" "$hex"
             submit "$miner_id"
-            echo -e "\e[38;2;${R};${G};${B}mTatertot: Mining for $miner_id with $hex\e[0m\n"
+            printf "\e[38;2;${R};${G};${B}mTatertot: Mining for AA45ED46 with ${hex}\e[0m\n"
+
         done
         echo "Sleeping for 30 seconds."
     else
