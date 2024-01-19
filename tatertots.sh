@@ -15,7 +15,7 @@ gen_color() {
 
 hex_to_ansi() {
     hex=$1
-    decimal=$(printf "%d" 0x${hex:1:2})
+    decimal=$(printf "%d" 0x${hex:1:6})
     ansi=$((16 + (decimal % 216)))
     echo "$ansi"
 }
