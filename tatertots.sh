@@ -3,7 +3,7 @@
 source miner.conf
 declare -g last_hash_result=""
 
-echo -e "\nNapoleon, give me some of your tots."
+echo -e "\nPicture this: Potatoes mining starch in a starch mine. Delightful, isn't it?"
 
 gen_color() { printf "#%06X\n" $((RANDOM % 0xFFFFFF)); }
 
@@ -15,8 +15,8 @@ gen_hash() {
 
 submit() {
     local miner_id=$1 retries=3
-    local response=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"hash\": \"$new_hash\", \"miner_id\": \"$miner_id\", \"color\": \"$color\"}" "$host/submit_block")
-    local http_status="${response: -3}"
+    local submit_hash=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"hash\": \"$new_hash\", \"miner_id\": \"$miner_id\", \"color\": \"$color\"}" "$host/submit_block")
+    local http_status="${submit_hash: -3}"
     if [ "$http_status" -eq 200 ]; then
         echo -e "API Response Code: $http_status\nSubmitted Block Hash: $new_hash"
     else
@@ -37,10 +37,10 @@ mine() {
             submit "$miner_id"
             echo -e "$(tput setaf 2)Tatertots: mining for $miner_id with $color$(tput sgr0)\n"
         done
-        echo -e "Sleeping for 20 seconds."
+        echo -e "Sleeping for 30 seconds."
     else
-        echo "Starch chain hash has not changed. Sleeping for 20 seconds."
+        echo "Starch chain hash has not changed. Sleeping for 30 seconds."
     fi
 }
 
-while true; do mine; sleep 20; done
+while true; do mine; sleep 30; done
