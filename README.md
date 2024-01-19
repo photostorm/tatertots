@@ -41,19 +41,24 @@ docker compose down
 
 If you want to run the script in a Tmux session or with Systemd just go through these steps to execute it locally.
 
-1. Clone this repo and cd into it.
+1. You need curl an jq.
+```shell
+sudo apt install curl jq
+```
+
+2. Clone this repo and cd into it.
 ```shell
 git clone https://github.com/wcatz/tatertots.git; cd tatertots
 ```
-2. Copy the miner-example.conf file to a file named miner.conf
+3. Copy the miner-example.conf file to a file named miner.conf
 ```shell
 cp miner-example.conf miner.conf
 ```
-3. Edit miner.conf, add your miner id/'s with Nano. ctrl+o to save, ctrl+x to exit Nano.
+4. Edit miner.conf, add your miner id/'s with Nano. ctrl+o to save, ctrl+x to exit Nano.
 ```shell
 nano miner.conf
 ```
-4. Make the script executable and run it. ctr+x to stop it.
+5. Make the script executable and run it. ctr+x to stop it.
 ```shell
 chmod +x tatertots.sh
 ./tatertots.sh
