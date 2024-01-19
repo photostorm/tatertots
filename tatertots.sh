@@ -23,7 +23,8 @@ submit() {
     local submit_hash=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"hash\": \"$new_hash\", \"miner_id\": \"$miner_id\", \"color\": \"$color\"}" "$host/submit_block")
     local http_status="${submit_hash: -3}"
     if [[ "$http_status" =~ ^2 ]]; then
-        echo -e "API Response Code: $http_status\nSubmitted Block Hash: $new_hash"
+        echo -e "API Response Code: $http_status"
+        printf "\e[38;2;${R};${G};${B}mSubmitted Block Hash: $new_hash\e[0m\n"
     else
         echo "API Request failed with HTTP response code: $http_status"
     fi
