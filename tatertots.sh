@@ -20,7 +20,7 @@ gen_hash() {
 
 submit() {
     local miner_id=$1 retries=3
-    local submit_hash=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"hash\": \"$new_hash\", \"miner_id\": \"$miner_id\", \"color\": \"$color\"}" "$host/submit_block")
+    local submit_hash=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"hash\": \"$new_hash\", \"miner_id\": \"$miner_id\", \"color\": \"$hex\"}" "$host/submit_block")
     local http_status="${submit_hash: -3}"
     if [[ "$http_status" =~ ^2 ]]; then
         echo -e "API Response Code: $http_status"
@@ -41,7 +41,7 @@ mine() {
             gen_color
             gen_hash "$last_hash_result" "$miner_id" "$hex"
             submit "$miner_id"
-            printf "Tatertot: \e[38;2;${R};${G};${B}mMining for $miner_id with ${hex}\e[0m\n"
+            printf "Tatertot: \e[38;2;${R};${G};${B}mMining for $miner_id with $hex\e[0m\n"
             printf "Miner balance: \e[38;2;${R};${G};${B}m$balance\e[0m\n"
             printf "\n"
         done
