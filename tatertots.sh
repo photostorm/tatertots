@@ -15,11 +15,21 @@ gen_color() {
 
 hex_to_ansi() {
     hex=$1
-    decimal=$(printf "%d" 0x${hex:1:6})
-    ansi=$(( (decimal % 6) + 16 ))
-    echo "$ansi"
+    decimal=$(from_hex "$hex")
+    ansi_color=$((decimal % 256))
+    echo "$ansi_color"
 }
 
+from_hex() {
+  hex=$1
+  if [[ $hex == "#"* ]]; then
+    hex=$(echo $1 | awk '{print substr($0,2)}')
+  fi
+  r=$(printf '0x%0.2s' "$hex")
+  g=$(printf '0x%0.2s' ${hex#??})
+  b=$(printf '0x%0.2s' ${hex#????})
+  echo -e `printf "%03d" "$(((r<75?0:(r-35)/40)*6*6+(g<75?0:(g-35)/40)*6+(b<75?0:(b-35)/40)+16))"`
+}
 
 gen_hash() {
     local last_hash=$1 miner_id=$2 color=$3
