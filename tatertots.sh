@@ -16,9 +16,10 @@ gen_color() {
 hex_to_ansi() {
     hex=$1
     decimal=$(printf "%d" 0x${hex:1:6})
-    ansi=$((16 + (decimal % 216)))
+    ansi=$(( (decimal % 256) + 16 ))
     echo "$ansi"
 }
+
 
 gen_hash() {
     local last_hash=$1 miner_id=$2 color=$3
