@@ -40,7 +40,7 @@ mine() {
             gen_hash "$last_hash_result" "$miner_id" "$hex"
             submit "$miner_id"
             printf "\e[38;2;${R};${G};${B}mTatertot: Mining for AA45ED46 with ${hex}\e[0m\n"
-
+            printf "\n"
         done
         echo "Sleeping for 30 seconds."
     else
