@@ -45,10 +45,10 @@ mine() {
             printf "Miner balance: \e[38;2;${R};${G};${B}m$balance\e[0m\n"
             printf "\n"
         done
-        echo "Sleeping for 30 seconds."
+        echo "Sleeping for 69 seconds."
     else
-        echo "Starch chain hash has not changed. Sleeping for 30 seconds."
+        echo "Starch chain hash has not changed. Sleeping for 69 seconds."
     fi
 }
 
-while true; do mine; sleep 30; done
+while true; do mine; sleep 69; done
