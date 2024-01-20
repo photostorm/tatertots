@@ -62,10 +62,36 @@ mine() {
             printf "Miner balance: \e[38;2;${R};${G};${B}m$balance\e[0m"; printf ", Lifetime blocks: \e[38;2;${R};${G};${B}m$blocks\e[0m";  printf ", Since startup: \e[38;2;${R};${G};${B}m$changes\e[0m\n"
             printf "\n"
         done
-        echo "Sleeping for 49 seconds."
+
+        local pending_blocks=$(curl -s "$host/pending_blocks")
+        local all_miners_found=true
+
+        for miner_id in "${miner_ids[@]}"; do
+            if ! jq -e --arg id "$miner_id" '.pending_blocks[] | select(.miner_id == $id)' <<< "$pending_blocks" >/dev/null; then
+                echo "Miner ID $miner_id not found in the list."
+                all_miners_found=false
+            fi
+        done
+
+        if $all_miners_found; then
+            echo "All our block submissions confirmed ✅"
+            echo "Waiting for other miners to submit before calculating odds.."
+        else
+            echo "Not all our miners found in the list. 😡"
+            echo "Resubmitting all miners..."
+            for miner_id in "${miner_ids[@]}"; do
+                gen_color
+                gen_hash "$last_hash_result" "$miner_id" "$hex"
+                submit "$miner_id"
+                echo "Tatertot: Mining for $miner_id with color \e[38;2;${R};${G};${B}m$hex\e[0m"
+            done
+            echo "All miners resubmitted ✅"
+        fi
     else
-        echo -e "Starch chain hash has not changed.\nSleeping for 49 seconds."
+        local pending_blocks=$(curl -s "$host/pending_blocks")
+        local miner_count=$(echo "$pending_blocks" | jq '.pending_blocks | length')
+        echo -e "Chance: 1 in $miner_count : $(awk "BEGIN { printf \"%.3f%%\", 100.0/$miner_count }")"
     fi
 }
 
-while true; do mine; sleep 49; done
+while true; do mine; sleep 20; done
