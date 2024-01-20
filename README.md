@@ -58,7 +58,7 @@ cp miner-example.conf miner.conf
 ```shell
 nano miner.conf
 ```
-5. Make the script executable and run it. ctr+x to stop it.
+5. Make the script executable and run it. ctr+c to stop it.
 ```shell
 chmod +x tatertots.sh
 ./tatertots.sh
