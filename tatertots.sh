@@ -3,7 +3,7 @@
 source miner.conf
 declare -A initial_lifetime_blocks
 
-echo -e "\nPicture this: \e[38;2;139;69;19mPotatoes mining starch in a starch mine. Delightful, isn't it?\e[0m\n"
+echo -e "Picture this: \e[38;2;139;69;19mPotatoes mining starch in a starch mine. Delightful, isn't it?\e[0m"
 
 tip_color() {
     local hex=$1
@@ -45,7 +45,7 @@ mine() {
     if [ "$current_hash" != "$last_hash_result" ]; then
         last_hash_result="$current_hash"
         tip_color "$current_color"
-        printf "Chain extended, new tip: #$block_id \n"; printf "\e[38;2;${R};${G};${B}m$current_hash\e[0m\n"; printf "\n"
+        printf "\nChain extended, new tip: #$block_id \n"; printf "\e[38;2;${R};${G};${B}m$current_hash\e[0m\n"; printf "\n"
         for miner_id in "${miner_ids[@]}"; do
             local query_miner=$(curl -s "$host/miner/$miner_id")
             local balance=$(echo "$query_miner" | jq -r '.balance')
@@ -64,7 +64,7 @@ mine() {
         done
         echo "Sleeping for 49 seconds."
     else
-        echo -e "Starch chain hash has not changed.\nSleeping for 49 seconds.\n"
+        echo -e "Starch chain hash has not changed.\nSleeping for 49 seconds."
     fi
 }
 
