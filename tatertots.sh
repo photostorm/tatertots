@@ -62,7 +62,7 @@ mine() {
             printf "Miner balance: \e[38;2;${R};${G};${B}m$balance\e[0m"; printf ", Lifetime blocks: \e[38;2;${R};${G};${B}m$blocks\e[0m";  printf ", Since startup: \e[38;2;${R};${G};${B}m$changes\e[0m\n"
             printf "\n"
         done
-
+        sleep 5
         local pending_blocks=$(curl -s "$host/pending_blocks")
         local all_miners_found=true
 
