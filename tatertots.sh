@@ -27,7 +27,7 @@ gen_hash() {
 
 submit() {
     local miner_id=$1 retries=3
-    local submit_hash=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"hash\": \"$new_hash\", \"miner_id\": \"$miner_id\", \"color\": \"$hex\"}" "$host/submit_block")
+    local submit_hash=$(curl -s -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"blocks\": [{\"hash\": \"$new_hash\", \"miner_id\": \"$miner_id\", \"color\": \"$hex\"}]}" "$host/submit_blocks")
     local http_status="${submit_hash: -3}"
     if [[ "$http_status" =~ ^2 ]]; then
         echo "🥔 Response Code: $http_status 👍"
@@ -38,16 +38,16 @@ submit() {
 }
 
 mine() {
-    local query_tip=$(curl -s "$host/blockchain_config")
-    local current_hash=$(echo "$query_tip" | jq -r '.last_block.hash')
-    local current_color=$(echo "$query_tip" | jq -r '.last_block.color')
-    local block_id=$(echo "$query_tip" | jq -r '.last_block.id')
+    local query_tip=$(curl -s "$host/blockchain/last_block")
+    local current_hash=$(echo "$query_tip" | jq -r '.hash')
+    local current_color=$(echo "$query_tip" | jq -r '.color')
+    local block_id=$(echo "$query_tip" | jq -r '.block_id')
     if [ "$current_hash" != "$last_hash_result" ]; then
         last_hash_result="$current_hash"
         tip_color "$current_color"
         printf "\nChain extended, new tip: #$block_id \n"; printf "\e[38;2;${R};${G};${B}m$current_hash\e[0m\n"; printf "\n"
         for miner_id in "${miner_ids[@]}"; do
-            local query_miner=$(curl -s "$host/miner/$miner_id")
+            local query_miner=$(curl -s "$host/miners/$miner_id/account")
             local balance=$(echo "$query_miner" | jq -r '.balance')
             local blocks=$(echo "$query_miner" | jq -r '.blocks')
             if [ -z "${initial_lifetime_blocks["$miner_id"]}" ]; then
@@ -67,7 +67,7 @@ mine() {
         local all_miners_found=true
 
         for miner_id in "${miner_ids[@]}"; do
-            if ! jq -e --arg id "$miner_id" '.pending_blocks[] | select(.miner_id == $id)' <<< "$pending_blocks" >/dev/null; then
+            if ! jq -e --arg id "$miner_id" '.blocks[] | select(.miner_id == $id)' <<< "$pending_blocks" >/dev/null; then
                 echo "Miner ID $miner_id not found in the list."
                 all_miners_found=false
             fi
@@ -89,7 +89,7 @@ mine() {
         fi
     else
         local pending_blocks=$(curl -s "$host/pending_blocks")
-        local miner_count=$(echo "$pending_blocks" | jq '.pending_blocks | length')
+        local miner_count=$(echo "$pending_blocks" | jq '.blocks | length')
         echo -e "Chance: 1 in $miner_count : $(awk "BEGIN { printf \"%.3f%%\", 100.0/$miner_count }")"
     fi
 }
